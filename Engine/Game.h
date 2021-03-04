@@ -39,6 +39,7 @@ private:
 	void UpdateModel();
 	/********************************/
 	/*  User Functions              */
+	bool CheckControlKeys();
 	/********************************/
 private:
 	MainWindow& wnd;
@@ -48,5 +49,6 @@ private:
 	int x = 0, y = 0;
 	Font textHandler;
 	Board board;
+	bool keyIsDown = false;
 	/********************************/
 };

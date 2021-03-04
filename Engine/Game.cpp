@@ -41,14 +41,28 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
-	if(wnd.kbd.KeyIsPressed(VK_RIGHT))
+	if(wnd.kbd.KeyIsPressed(VK_RIGHT) && !keyIsDown){
 		board.MoveAllCells(Directions::RIGHT);
-	else if(wnd.kbd.KeyIsPressed(VK_LEFT))
+		keyIsDown = true;
+	}
+	else if(wnd.kbd.KeyIsPressed(VK_LEFT) && !keyIsDown){
 		board.MoveAllCells(Directions::LEFT);
-	else if(wnd.kbd.KeyIsPressed(VK_UP))
+		keyIsDown = true;
+	}
+	else if(wnd.kbd.KeyIsPressed(VK_UP) && !keyIsDown){
 		board.MoveAllCells(Directions::UP);
-	else if(wnd.kbd.KeyIsPressed(VK_DOWN))
+		keyIsDown = true;
+	}
+	else if(wnd.kbd.KeyIsPressed(VK_DOWN) && !keyIsDown){
 		board.MoveAllCells(Directions::DOWN);
+		keyIsDown = true;
+	}else if(!CheckControlKeys() && keyIsDown)
+		keyIsDown = false;
+}
+
+bool Game::CheckControlKeys(){
+	return wnd.kbd.KeyIsPressed(VK_RIGHT) || wnd.kbd.KeyIsPressed(VK_LEFT) 
+		|| wnd.kbd.KeyIsPressed(VK_UP) || wnd.kbd.KeyIsPressed(VK_DOWN);
 }
 
 void Game::ComposeFrame()

@@ -16,6 +16,43 @@ void Graphics::PutPixel( int x,int y,Color c )
 	pSysBuffer[Graphics::ScreenWidth * y + x] = c;
 }
 
+void Graphics::DrawStright(Vei2 p1, Vei2 p2, Color c){
+	if(p1.x != p2.x){
+		if(p1.x > p2.x)
+			std::swap(p1, p2);
+
+		for(int x = p1.x; x < p2.x; x++)
+			if(p1.y >= 0 && p1.y < ScreenHeight && x >= 0 && x < ScreenWidth)
+				PutPixel(x, p1.y, c);
+	}
+	else
+	{
+		if(p1.y > p2.y)
+			std::swap(p1, p2);
+
+		for(int y = p1.y; y < p2.y; y++)
+			if(y >= 0 && y < ScreenHeight && p1.x >= 0 && p1.x < ScreenWidth)
+				PutPixel(p1.x, y, c);
+	}
+};
+
+void Graphics::DrawFilledRect(Vei2 pos, Vei2 dims, Color c){
+	for(int k = pos.y; k < pos.y + dims.y; k++)
+		for(int i = pos.x; i < pos.x + dims.x; i++){
+			if(k >= 0 && k < ScreenHeight && i >= 0 && i < ScreenWidth)
+				PutPixel(i, k, c);
+		}
+}
+
+void Graphics::DrawFilledRectBorder(Vei2 pos, Vei2 dims, Color c, Color borderC){
+	DrawFilledRect(pos, dims, c);
+	DrawStright(pos, {pos.x + dims.x, pos.y}, borderC);
+	DrawStright(pos, {pos.x, pos.y + dims.y}, borderC);
+	DrawStright(pos + dims, {pos.x + dims.x, pos.y}, borderC);
+	DrawStright(pos + dims, {pos.x, pos.y + dims.y}, borderC);
+
+}
+
 Color Graphics::GetPixel( int x,int y ) const
 {
 	assert( x >= 0 );

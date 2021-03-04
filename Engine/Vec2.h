@@ -12,6 +12,8 @@ public:
 		x( x_in ),
 		y( y_in )
 	{}
+	Vec2_( T in):
+		x(in), y(in){}
 	template<typename S>
 	explicit Vec2_( const Vec2_<S>& src )
 		:

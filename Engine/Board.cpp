@@ -13,13 +13,38 @@ void Board::Draw(Graphics &gfx, Font ft){
 }
 
 void Board::InitSpawn(){
-	std::mt19937 rng(std::random_device{}());
-	std::uniform_int_distribution<int> uid(0, 11);
 	for(int y = 0; y < height; y++){
 		cells.push_back({});
 		for(int x = 0; x < width; x++)
-			cells[y].push_back({{x, y}, (int)exp2(uid(rng))});
+			cells[y].push_back({{x, y}, 0});
 	}
+	SpawnCell();
+	SpawnCell();
+}
+
+void Board::SpawnCell(){
+	CheckCells();
+	if(cellsAvalible){
+		while(true){
+			std::mt19937 rng(std::random_device{}());
+			std::uniform_int_distribution<int> pos(0, width-1);
+			std::uniform_int_distribution<int> val(1, 2);
+			int x = pos(rng), y = pos(rng);
+			if(cells[y][x].value == 0){
+				cells[y][x].value = (int)exp2(val(rng));
+				return;
+			}
+		}
+	}
+}
+
+void Board::CheckCells(){
+	for(auto &i : cells)
+		for(auto &c : i)
+			if(c.value == 0){
+				cellsAvalible = true;
+				return;
+			}
 }
 
 void Board::Cell::Draw(Graphics &gfx, Font ft, Vei2 boardPos){

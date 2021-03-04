@@ -13,16 +13,18 @@ public:
 	const static int cellSize = 100;
 private:
 	void InitSpawn();
+	void SpawnCell();
+	void CheckCells();
 
 	class Cell{
 	public:
 		void Draw(Graphics &gfx, Font ft, Vei2 boardPos);
 		Cell(Vei2 _pos, int _value);
-	private:
 		int value;
 		Vei2 pos;
 	};
 
+	bool cellsAvalible = true;
 	std::vector<std::vector<Cell>> cells;
 	Vei2 pos = {200, 100};
 };

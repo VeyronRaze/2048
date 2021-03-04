@@ -52,15 +52,4 @@ void Game::UpdateModel()
 
 void Game::ComposeFrame()
 {
-	bencher.Start();
-
-	for( const auto& pos : positions )
-	{
-		gfx.DrawSprite( pos.x,pos.y,s,SpriteEffect::Copy{} );
-	}
-
-	if( bencher.End() )
-	{
-		OutputDebugString( (std::wstring( bencher ) + L"\n").c_str() );
-	}
 }

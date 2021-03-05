@@ -11,8 +11,10 @@ void Board::Draw(Graphics &gfx, Font ft){
 		for(int x = 0; x < width; x++)
 			gfx.DrawFilledRectBorder(Vei2(x, y) * cellSize + pos, {cellSize, cellSize}, Colors::Gray, Colors::LightGray);
 
-	if(!cellsAvalible)
-		ft.DrawText("Game Over!", pos + Vei2{140, -28}, Colors::White, gfx);
+	ft.DrawText("Score:" + std::to_string(score), pos + Vei2(0, -28), Colors::White, gfx);
+
+	if(!cellsAvalible && !moovesAvalible)
+		ft.DrawText("Game Over!", pos + Vei2{240, -28}, Colors::White, gfx);
 	for(auto &i : cells )
 		for(auto &j : i)
 			j.Draw(gfx, ft, pos);
@@ -54,6 +56,22 @@ void Board::CheckCells(){
 	cellsAvalible = false;
 }
 
+void Board::CheckIfMovesAvalible()
+{
+	for(int y = 0; y < height; y++)
+		for(int x = 0; x < width; x++){
+			Cell currentCell = cells[y][x];
+			if (cells[y][x].value == 0 || GetClosestCell(currentCell, Directions::RIGHT) != 0
+				|| GetClosestCell(currentCell, Directions::LEFT) != 0
+				|| GetClosestCell(currentCell, Directions::UP) != 0
+				|| GetClosestCell(currentCell, Directions::DOWN) != 0) {
+				moovesAvalible = true;
+				return;
+			}
+		}
+	moovesAvalible = false;
+}
+
 size_t Board::GetClosestCell(Cell &movable, Directions dir){
 	size_t offset = 0;
 	switch(dir){
@@ -62,7 +80,7 @@ size_t Board::GetClosestCell(Cell &movable, Directions dir){
 				if(movable.pos.x + i >= width)
 					return offset;
 				else{
-					Cell possibleCell = cells[movable.pos.y][movable.pos.x + i];
+					Cell possibleCell = cells[movable.pos.y][movable.pos.x + (size_t)i];
 					if(possibleCell.value == 0 || possibleCell.value == movable.value)
 						offset = i;
 					else
@@ -75,7 +93,7 @@ size_t Board::GetClosestCell(Cell &movable, Directions dir){
 				if(movable.pos.x - i < 0)
 					return offset;
 				else{
-					Cell possibleCell = cells[movable.pos.y][movable.pos.x - i];
+					Cell possibleCell = cells[movable.pos.y][movable.pos.x - (size_t)i];
 					if(possibleCell.value == 0 || possibleCell.value == movable.value)
 						offset = i;
 					else
@@ -88,7 +106,7 @@ size_t Board::GetClosestCell(Cell &movable, Directions dir){
 				if(movable.pos.y - i < 0)
 					return offset;
 				else{
-					Cell possibleCell = cells[movable.pos.y - i][movable.pos.x];
+					Cell possibleCell = cells[movable.pos.y - (size_t)i][movable.pos.x];
 					if(possibleCell.value == 0 || possibleCell.value == movable.value)
 						offset = i;
 					else
@@ -101,7 +119,7 @@ size_t Board::GetClosestCell(Cell &movable, Directions dir){
 				if(movable.pos.y + i >= width)
 					return offset;
 				else{
-					Cell possibleCell = cells[movable.pos.y  + i][movable.pos.x];
+					Cell possibleCell = cells[movable.pos.y  + (size_t)i][movable.pos.x];
 					if(possibleCell.value == 0 || possibleCell.value == movable.value)
 						offset = i;
 					else
@@ -127,7 +145,7 @@ void Board::MoveCell(Cell &original, Cell &destination){
 }
 
 void Board::MoveAllCells(Directions dir){
-	if(cellsAvalible){
+	if(moovesAvalible){
 		switch(dir){
 			case Directions::RIGHT:
 				for(int y = 0; y < height; y++)
@@ -180,8 +198,15 @@ void Board::MoveAllCells(Directions dir){
 	}
 }
 
+void Board::Update()
+{
+	CheckIfMovesAvalible();
+	CheckCells();
+}
+
 void Board::MergeCells(Cell & destination, Cell & donor){
 	destination.value += donor.value;
+	score += destination.value;
 	donor.value = 0;
 }
 
@@ -198,11 +223,11 @@ void Board::Cell::Draw(Graphics &gfx, Font ft, Vei2 boardPos){
 			nSymbols++;
 			temp /= 10;
 		}
-		gfx.DrawFilledRectBorder(drawPos, {cellSize, cellSize}, Colors::MakeRGB(220, 220 - 10 * (int)log(value), 0), Colors::LightGray);
+		gfx.DrawFilledRectBorder(drawPos, {cellSize, cellSize}, Colors::MakeRGB(220, 220 - 10 * (int)log2(value), 0), Colors::LightGray);
 		ft.DrawText(std::to_string(value), drawPos + Vei2(50 - 8 * nSymbols, 36), Colors::White, gfx);
 	}
 }
 
 Board::Cell::Cell(Vei2 _pos, int _value) : 
-	pos(_pos), value(_value)
+	pos(_pos), value(_value), oldPos(_pos)
 {}

@@ -23,6 +23,7 @@ public:
 	Board();
 	void Draw(Graphics &gfx, Font ft);
 	void MoveAllCells(Directions dir);
+	void Update();
 
 	const static int width = 4, height = 4;
 	const static int cellSize = 100;
@@ -30,11 +31,14 @@ private:
 	void InitSpawn();
 	void SpawnCell();
 	void CheckCells();
+	void CheckIfMovesAvalible();
 	size_t GetClosestCell(Cell &movable, Directions dir);
 	void MoveCell(Cell &original, Cell &destination);
 	void MergeCells(Cell & destination, Cell & donor);
 
+	int score = 0;
 	bool cellsAvalible = true;
+	bool moovesAvalible = true;
 	std::vector<std::vector<Cell>> cells;
 	Vei2 pos = {200, 100};
 };

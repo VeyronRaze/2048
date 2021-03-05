@@ -26,6 +26,7 @@
 #include "Surface.h"
 #include "Font.h"
 #include "Board.h"
+#include "FrameTimer.h"
 
 class Game
 {
@@ -49,6 +50,7 @@ private:
 	int x = 0, y = 0;
 	Font textHandler;
 	Board board;
+	FrameTimer ft;
 	bool keyIsDown = false;
 	/********************************/
 };

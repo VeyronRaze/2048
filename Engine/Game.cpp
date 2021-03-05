@@ -41,6 +41,7 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
+	board.Update();
 	if(wnd.kbd.KeyIsPressed(VK_RIGHT) && !keyIsDown){
 		board.MoveAllCells(Directions::RIGHT);
 		keyIsDown = true;
@@ -67,5 +68,6 @@ bool Game::CheckControlKeys(){
 
 void Game::ComposeFrame()
 {
+	textHandler.DrawText("FPS:" + std::to_string((int)(1000 / ft.Mark())), { 0,0 }, Colors::White, gfx);
 	board.Draw(gfx, textHandler);
 }
